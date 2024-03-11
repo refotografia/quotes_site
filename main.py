@@ -1,3 +1,4 @@
+import json
 from flask import Flask, render_template
 import datetime
 import requests
@@ -12,20 +13,20 @@ def home():
 
 @app.route('/blog')
 def blog():
-    response = requests.get(url='https://api.npoint.io/13462902ff4869770bda')
-    all_posts = response.json()
-    current = datetime.date.today()
-    return render_template('blog.html', posts=all_posts, year=current.year)
+    with open(file='static/package.json', mode="r") as file:
+        all_posts = json.load(file)
+        current = datetime.date.today()
+        return render_template('blog.html', posts=all_posts, year=current.year)
 
 @app.route('/post/<id>')
 def post(id):
-    response = requests.get(url='https://api.npoint.io/13462902ff4869770bda')
-    all_posts = response.json()
-    for p in all_posts:
-        if p["id"] == id:
-            post_x = p
-    current = datetime.date.today()
-    return render_template('post.html', post=post_x, year=current.year)
+    with open(file='static/package.json', mode="r") as file:
+        all_posts = json.load(file)
+        for p in all_posts:
+            if p["id"] == id:
+                post_x = p
+        current = datetime.date.today()
+        return render_template('post.html', post=post_x, year=current.year)
 
 
 if __name__ == "__main__":
